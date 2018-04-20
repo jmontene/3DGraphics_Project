@@ -5,10 +5,15 @@
 struct ModelData {
 	float *vertices;
 	int verticesSize;
+
 	unsigned short *indices;
 	int indicesSize;
+
 	float *normals;
+	int normalsSize;
+
 	float *textureIndices;
+	int texturesSize;
 };
 
 class GeometryGenerator {

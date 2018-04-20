@@ -11,6 +11,6 @@ uniform mat4 Projection;
 
 void main(){
 	texCoord = vTexture;
-	fragPos = vPosition;
+	fragPos = (View * Model * vec4(vPosition,1.0f)).xyz;
 	gl_Position = Projection * View * Model * vec4(vPosition, 1.0f);
 }

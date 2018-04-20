@@ -29,7 +29,14 @@ float cameraZ = 3.f;
 ModelData coneData;
 GLuint cone_vbo;
 GLuint cone_ibo;
+GLuint coneTexture_vbo;
 GLuint cone_vao;
+
+ModelData sphereData;
+GLuint sphere_vbo;
+GLuint sphere_ibo;
+GLuint sphereTexture_vbo;
+GLuint sphere_vao;
 
 GLint model;
 GLint view;
@@ -69,8 +76,11 @@ void init(void)
 
 	//Geometries
 	coneData = GeometryGenerator::cone(0.5f, 1.f);
+	sphereData = GeometryGenerator::sphere(1.0f);
 
 	//vbos, ibos
+
+	//Cone
 	glGenBuffers(1, &cone_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, cone_vbo);
 	glBufferData(GL_ARRAY_BUFFER, coneData.verticesSize * sizeof(float), coneData.vertices, GL_STATIC_DRAW);
@@ -79,12 +89,20 @@ void init(void)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cone_ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, coneData.indicesSize * sizeof(unsigned short), coneData.indices, GL_STATIC_DRAW);
 
+	glGenBuffers(1, &coneTexture_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, coneTexture_vbo);
+	glBufferData(GL_ARRAY_BUFFER, coneData.texturesSize * sizeof(float), coneData.textureIndices, GL_STATIC_DRAW);
+
+	//
+
 	//vao
 	glGenVertexArrays(1, &cone_vao);
 	glBindVertexArray(cone_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, cone_vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, coneTexture_vbo);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cone_ibo);
 
 	//Uniforms
@@ -98,7 +116,7 @@ void init(void)
 
 	//Textures
 	GLint width, height;
-	unsigned char* image = SOIL_load_image("rubiksTexture.png", &width, &height, 0, SOIL_LOAD_RGB);
+	unsigned char* image = SOIL_load_image("castle_red.png", &width, &height, 0, SOIL_LOAD_RGB);
 
 	GLuint cube_tex = 0;
 	glGenTextures(1, &cube_tex);
