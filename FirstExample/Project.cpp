@@ -19,19 +19,17 @@ using namespace std;
 #include "glm\gtc\type_ptr.hpp"
 #include "glm\gtc\matrix_transform.hpp"
 #include "SOIL\SOIL.h"
-
-int divisions = 60;
-float plane_size = 1.f;
+#include "GeometryGenerator.h"
 
 float cameraSpeed = 0.1f;
 float cameraX = 0.f;
 float cameraY = 1.4f;
 float cameraZ = 3.f;
 
-GLuint plane_ibo;
-GLuint plane_vbo;
-GLuint plane_vao;
-GLuint texture_vbo;
+ModelData coneData;
+GLuint cone_vbo;
+GLuint cone_ibo;
+GLuint cone_vao;
 
 GLint model;
 GLint view;
@@ -44,12 +42,6 @@ GLint camPos;
 
 int width = 720;
 int height = 720;
-
-unsigned short* indices;
-float* vertices;
-float* colors;
-float* textureIndices;
-float* normals;
 
 float yAngle = 0.0f;
 float rotationSpeed = 20.0f;
@@ -75,88 +67,25 @@ void init(void)
 	GLuint program = LoadShaders(shaders);
 	glUseProgram(program);	//My Pipeline is set up
 
-	float division_size = plane_size / divisions;
-	int num_sub_planes = divisions * divisions;
-
-	//Vertices and Normals
-	vertices = new float[12 * num_sub_planes];
-	normals = new float[12 * num_sub_planes];
-	for (int i = 0; i < divisions; ++i) {
-		for (int j = 0; j < divisions; ++j) {
-			vertices[i*divisions*12 + j * 12] = j*division_size + (-division_size / 2);
-			vertices[i*divisions*12 + j * 12 + 1] = 0.f;
-			vertices[i*divisions*12 + j * 12 + 2] = -i*division_size + (division_size / 2);
-
-			vertices[i*divisions*12 + j * 12 + 3] = j*division_size + (division_size / 2);
-			vertices[i*divisions*12 + j * 12 + 4] = 0.f;
-			vertices[i*divisions*12 + j * 12 + 5] = -i*division_size + (division_size / 2);
-
-			vertices[i*divisions*12 + j * 12 + 6] = j*division_size + (-division_size / 2);
-			vertices[i*divisions*12 + j * 12 + 7] = 0.f;
-			vertices[i*divisions*12 + j * 12 + 8] = -i*division_size + (-division_size / 2);
-
-			vertices[i*divisions*12 + j * 12 + 9] = j*division_size + (division_size / 2);
-			vertices[i*divisions*12 + j * 12 + 10] = 0.f;
-			vertices[i*divisions*12 + j * 12 + 11] = -i*division_size + (-division_size / 2);
-		}
-	}
-	
-	//Indices
-	indices = new unsigned short[6 * num_sub_planes];
-	for (int i = 0; i < divisions; ++i) {
-		for (int j = 0; j < divisions; ++j) {
-			indices[i*divisions*6 + j * 6] = divisions * 4 * i + 4 * j;
-			indices[i*divisions*6 + j * 6 + 1] = divisions * 4 * i + 4 * j + 1;
-			indices[i*divisions*6 + j * 6 + 2] = divisions * 4 * i + 4 * j + 3;
-			indices[i*divisions*6 + j * 6 + 3] = divisions * 4 * i + 4 * j;
-			indices[i*divisions*6 + j * 6 + 4] = divisions * 4 * i + 4 * j + 3;
-			indices[i*divisions*6 + j * 6 + 5] = divisions * 4 * i + 4 * j + 2;
-		}
-		cout << endl;
-	}
-
-	//UV's
-	float end = 1.0f / divisions;
-	textureIndices = new float[8 * num_sub_planes];
-	for (int i = 0; i < divisions; ++i) {
-		for (int j = 0; j < divisions; ++j) {
-			textureIndices[i*divisions*8 + j * 8] = j*end;
-			textureIndices[i*divisions*8 + j * 8 + 1] = 1.0f - i*end;
-
-			textureIndices[i*divisions*8 + j * 8 + 2] = j*end + end;
-			textureIndices[i*divisions*8 + j * 8 + 3] = 1.0f - i*end;
-
-			textureIndices[i*divisions*8 + j * 8 + 4] = j*end;
-			textureIndices[i*divisions*8 + j * 8 + 5] = 1.0f - i*end - end;
-
-			textureIndices[i*divisions*8 + j * 8 + 6] = j*end + end;
-			textureIndices[i*divisions*8 + j * 8 + 7] = 1.0f - i*end - end;
-		}
-	}
+	//Geometries
+	coneData = GeometryGenerator::cone(0.5f, 1.f);
 
 	//vbos, ibos
-	glGenBuffers(1, &plane_vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, plane_vbo);
-	glBufferData(GL_ARRAY_BUFFER, 12 * num_sub_planes * sizeof(float), vertices, GL_STATIC_DRAW);
+	glGenBuffers(1, &cone_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, cone_vbo);
+	glBufferData(GL_ARRAY_BUFFER, coneData.verticesSize * sizeof(float), coneData.vertices, GL_STATIC_DRAW);
 
-	glGenBuffers(1, &plane_ibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, plane_ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * num_sub_planes * sizeof(unsigned short), indices, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &texture_vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, texture_vbo);
-	glBufferData(GL_ARRAY_BUFFER, 8 * num_sub_planes * sizeof(float), textureIndices, GL_STATIC_DRAW);
+	glGenBuffers(1, &cone_ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cone_ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, coneData.indicesSize * sizeof(unsigned short), coneData.indices, GL_STATIC_DRAW);
 
 	//vao
-	glGenVertexArrays(1, &plane_vao);
-	glBindVertexArray(plane_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, plane_vbo);
+	glGenVertexArrays(1, &cone_vao);
+	glBindVertexArray(cone_vao);
+	glBindBuffer(GL_ARRAY_BUFFER, cone_vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, texture_vbo);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, plane_ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cone_ibo);
 
 	//Uniforms
 	model = glGetUniformLocation(program, "Model");
@@ -189,7 +118,7 @@ void init(void)
 	glUniform1f(ambientStrength, 0.1f);
 }
 
-void drawPlane(glm::vec3 translation, float angle, glm::vec3 scale) {
+void drawModel(ModelData &data, glm::vec3 translation, float angle, glm::vec3 scale) {
 	glm::mat4 Model;
 	Model = glm::mat4(1.0f);
 	Model = glm::translate(Model, translation);
@@ -205,7 +134,7 @@ void drawPlane(glm::vec3 translation, float angle, glm::vec3 scale) {
 	Projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.01f, 1000.f);
 	glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(Projection));
 
-	glDrawElements(GL_TRIANGLES, 6 * divisions * divisions, GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_TRIANGLES, data.indicesSize, GL_UNSIGNED_SHORT, 0);
 }
 
 
@@ -216,14 +145,14 @@ void drawPlane(glm::vec3 translation, float angle, glm::vec3 scale) {
 
 void
 display(void){
-	glBindVertexArray(plane_vao);
+	glBindVertexArray(cone_vao);
 
 	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUniform3fv(lightPos, 1, glm::value_ptr(glm::vec3(lightX, lightY, lightZ)));
 	glUniform3fv(camPos, 1, glm::value_ptr(glm::vec3(cameraZ, cameraY, cameraZ)));
-	drawPlane(glm::vec3(0.f), 0.f, glm::vec3(1.f));
+	drawModel(coneData, glm::vec3(0.f), 0.f, glm::vec3(1.f));
 	
 	glutSwapBuffers();
 }
@@ -280,14 +209,10 @@ int
 main(int argc, char** argv){
 	srand(time(NULL));
 
-	//Ask for input
-	cout << "Please enter the number of divisions: ";
-	cin >> divisions;
-
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowSize(800, 720);
-	glutCreateWindow("Montenegro, Jose, 101085465");
+	glutCreateWindow("Final Project");
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
