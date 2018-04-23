@@ -13,7 +13,7 @@
 		22405D3820280A5C00CD9E54 /* LoadShaders.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22405D3620280A5B00CD9E54 /* LoadShaders.cpp */; };
 		2272AD712029483900CE3A87 /* camera.vert in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2272AD6F2029483900CE3A87 /* camera.vert */; };
 		2272AD722029483900CE3A87 /* camera.frag in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2272AD702029483900CE3A87 /* camera.frag */; };
-		7D729F29208AC1E40086C673 /* OpenGL_Project.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D729F28208AC1E40086C673 /* OpenGL_Project.cpp */; };
+		7D729F29208AC1E40086C673 /* Project.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7D729F28208AC1E40086C673 /* Project.cpp */; };
 		7D8CDFFA20602C8100A6351D /* libSOIL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D8CDFF920602C8100A6351D /* libSOIL.dylib */; };
 		7DE0919B20694D04008F6C39 /* GeometryGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7DE0919A20694D04008F6C39 /* GeometryGenerator.cpp */; };
 /* End PBXBuildFile section */
@@ -40,7 +40,7 @@
 		22405D3620280A5B00CD9E54 /* LoadShaders.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LoadShaders.cpp; sourceTree = "<group>"; };
 		2272AD6F2029483900CE3A87 /* camera.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = camera.vert; sourceTree = "<group>"; };
 		2272AD702029483900CE3A87 /* camera.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = camera.frag; sourceTree = "<group>"; };
-		7D729F28208AC1E40086C673 /* OpenGL_Project.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGL_Project.cpp; sourceTree = "<group>"; };
+		7D729F28208AC1E40086C673 /* Project.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Project.cpp; sourceTree = "<group>"; };
 		7D8CDFF920602C8100A6351D /* libSOIL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSOIL.dylib; path = Libraries/libsoil/1.0/lib/libSOIL.dylib; sourceTree = "<group>"; };
 		7DE0919920694C52008F6C39 /* GeometryGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GeometryGenerator.h; path = include/GeometryGenerator.h; sourceTree = "<group>"; };
 		7DE0919A20694D04008F6C39 /* GeometryGenerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = GeometryGenerator.cpp; sourceTree = "<group>"; };
@@ -84,7 +84,7 @@
 		22405D262028088100CD9E54 /* OpenGL Template */ = {
 			isa = PBXGroup;
 			children = (
-				7D729F28208AC1E40086C673 /* OpenGL_Project.cpp */,
+				7D729F28208AC1E40086C673 /* Project.cpp */,
 				22405D3620280A5B00CD9E54 /* LoadShaders.cpp */,
 				7DE0919A20694D04008F6C39 /* GeometryGenerator.cpp */,
 			);
@@ -159,7 +159,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7D729F29208AC1E40086C673 /* OpenGL_Project.cpp in Sources */,
+				7D729F29208AC1E40086C673 /* Project.cpp in Sources */,
 				7DE0919B20694D04008F6C39 /* GeometryGenerator.cpp in Sources */,
 				22405D3820280A5C00CD9E54 /* LoadShaders.cpp in Sources */,
 			);

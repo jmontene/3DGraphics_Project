@@ -13,10 +13,14 @@ struct ModelData {
     
     float *textureIndices;
     int texturesSize;
+    
+    float *colorIndices;
+    int colorSize;
 };
 
 class GeometryGenerator {
 public:
+    static ModelData hexagon(float width, float height, float depth);
     static ModelData box(float width, float height, float depth);
     static ModelData quad(float width, float depth);
     static ModelData wedge(float width, float depth);
